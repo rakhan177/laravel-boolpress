@@ -1,5 +1,6 @@
 <?php
 
+// use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HomeController@index');
-// creiamo rotta pubblica per i posts:
-Route::get('/posts', 'PostController@index')->name('posts.index');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+// rotta per utenti non loggati:
+Route::get('/', 'HomeController@index')->name("index");
+
+// rotta posts per utenti non loggati
+Route::get('/posts', 'PostController@index')->name("posts.index");
+
+Route::get('/posts/{slug}', "PostController@show")->name("posts.show");
+
+//ci crea tutte le rotte in auth, che gestiscono l' autenticazione
 Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
@@ -29,13 +39,12 @@ Route::prefix('admin')
 ->middleware('auth')
 // il middelware controlla se siamo loggati; in queste rotte, se non autenticato, l utente non potrà accedere
 ->name('admin.')
-// con name diamo un prefisso al name della rotta
+// con name diamo un prefisso al name della rotta per differenziarle da quelle pubbliche
 ->group(function(){
-    Route::get('/', 'HomeController@index')
-    ->name('home');
+    Route::get('/', 'HomeController@index')->name('index');
+    // inseriamo la rotta per i post degli admin con il resource che prenderà tutte le rotte della crud
+    Route::resource('/posts', 'PostController');
+    // inseriamo la rotta delle categorie
+    Route::get('/categories', 'CategoryController@index')->name('categories.index');
 
-    // creiamo rotta posts index per gli admin
-    // Route::get('/posts', 'PostController@index');
-    // se utilizziamo resource creiamo tutte le rotte della crud:
-    Route::resource('/posts', 'PostController@index');
 });

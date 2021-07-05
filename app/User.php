@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // andiamo ad avvisare il model che per questo utente possono esserci piu post
+    public function posts(){
+        return $this->hasMany("App\Post");
+    }
 }

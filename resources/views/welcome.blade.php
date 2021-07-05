@@ -79,9 +79,10 @@
                 </div>
             @endif
 
-            <div class="content">
+            <a href="{{ route('posts.index') }}">Vai ai post</a>
+            {{-- <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Laravellllllll
                 </div>
 
                 <div class="links">
@@ -94,7 +95,7 @@
                     <a href="https://vapor.laravel.com">Vapor</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </body>
 </html>
