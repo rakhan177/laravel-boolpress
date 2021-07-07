@@ -16,4 +16,9 @@ class Post extends Model
         // un post una categoria
         return $this->belongsTo("App\Category");
     }
+
+    //relazione molti a molti scritta quindi al plurale
+    public function tags(){
+        return $this->belongsToMany('App\Tag');
+    }
 }

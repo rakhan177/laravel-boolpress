@@ -13,6 +13,16 @@
                 <dl>
                     <dt>Titolo</dt>
                     <dd>{{ $post->title }}</dd>
+                    <dt>Tags</dt>
+                    <dd>
+                    @if(count($post->tags) > 0)
+                        @foreach($post->tags as $tag)
+                            <span class="badge badge-primary">{{ $tag->name }}</span>
+                        @endforeach
+                    @else
+                        <em>Nessun tag disponibile...</em>
+                    @endif
+                    </dd>
                     <dt>Slug</dt>
                     <dd>{{ $post->slug }}</dd>
                     <dt>Contenuto</dt>

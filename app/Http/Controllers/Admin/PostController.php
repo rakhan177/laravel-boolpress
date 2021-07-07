@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
 use App\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -120,10 +121,12 @@ class PostController extends Controller
     {
         // recuperiamo le categorie
         $categories = Category::all();
+        $tags = Tag::all();
         // creiamo un array per passare i dati
         $data = [
             'post' => $post,
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ];
         return view('admin.posts.edit', $data);
     }
@@ -144,12 +147,14 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'content' => 'required',
             // se la categoria esiste controlla che l id inserito sia salvato in una tabella
-            'category_id' => "nullable|exists:categories,id"
+            'category_id' => "nullable|exists:categories,id",
+            // facciamo la validazione anche per i tag
+            'tags' => 'exists:tags,id'
         ]);
 
         $form_data = $request->all();
 
-        // verifico se il titolo ricevuto dal form è diverso dal vecchio titolo
+        //verifico se il titolo ricevuto dal form è diverso dal vecchio titolo
         if ($form_data['title'] != $post->title) {
             // è stato modificato il titolo => devo modificare anche lo slug
             // genero lo slug
@@ -170,6 +175,15 @@ class PostController extends Controller
             $form_data['slug'] = $slug;
         }
 
+        // se esistono togliamo tutte le associazioni di tag al post
+        $post->tags()->detach();
+        // prima di aggiungere tag controlliamo che la chiave esiste
+        if(key_exists('tags', $form_data)){
+            // poi con attach specifichiamo i nuovi tags da aggiungere
+            $post->tags()->attach($form_data['tags']);
+        }
+        
+
         $post->update($form_data);
         return redirect()->route('admin.posts.index');
     }
@@ -181,6 +195,7 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post) {
+        $post->tags()->detach();
         $post->delete();
         return redirect()->route('admin.posts.index');
     }

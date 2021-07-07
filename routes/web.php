@@ -46,5 +46,7 @@ Route::prefix('admin')
     Route::resource('/posts', 'PostController');
     // inseriamo la rotta delle categorie
     Route::get('/categories', 'CategoryController@index')->name('categories.index');
+    // aggiungiamo la sezione tag
+    Route::get('/tags', 'TagController@index')->name('tags.index');
 
 });
